@@ -25,11 +25,16 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
             const { text } = document.lineAt(line);
             formatedLine = text;
             formatedLine = formatedLine.replace(/^\s+/g, "");
+            formatedLine = formatedLine.replace(/\s+$/g, "");
             if (formatedLine.match(/^\s*\}/)) {
                 deep -= 4;
                 if (deep < 0) {
                     deep = 0;
                 }
+            }
+            if (formatedLine.match(/^(return)/i) && labelFunction === true) {
+                deep -= 4;
+                labelFunction = false;
             }
 
             let pattern = /((class)\s*\w*\s*?\{)/gi;
@@ -73,15 +78,6 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
                 formatedLine = formatedLine.replace(result[0], res);
             }
 
-            if (formatedLine.match(/(.+::?)/)) {
-                deep += 4;
-                labelFunction = true;
-            }
-            if (formatedLine.match(/^(return)/) && labelFunction === true) {
-                deep -= 4;
-                labelFunction = false;
-            }
-
             let noFunctionPattern = /\b((if|while|else if)\s?(\(.*?\))?\s*?\{)/gi;
             result = [];
             // tslint:disable-next-line: no-conditional-assignment
@@ -112,13 +108,18 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
             }
 
             formatDocument += " ".repeat(deep) + formatedLine;
+
+            if (formatedLine.match(/(.+::?)/)) {
+                deep += 4;
+                labelFunction = true;
+            }
+            if (deep < 0) {
+                deep = 0;
+            }
+            if (formatedLine.match(/\{$/)) {
+                deep += 4;
+            }
             if (line !== document.lineCount - 1) {
-                if (deep < 0) {
-                    deep = 0;
-                }
-                if (formatedLine.match(/\{$/)) {
-                    deep += 4;
-                }
                 formatDocument += "\n";
             }
 
