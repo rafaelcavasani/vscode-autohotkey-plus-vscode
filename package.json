@@ -18,13 +18,9 @@
 	],
 	"license": "SEE LICENSE IN LICENSE.md",
 	"icon": "icon.png",
-	"bugs": {
-		"url": "https://github.com/cweijan/vscode-autohotkey/issues"
-	},
-	"homepage": "https://github.com/cweijan/vscode-autohotkey/blob/master/README.md",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/cweijan/vscode-autohotkey.git"
+		"url": "https://rafaelcavasani.visualstudio.com/vscode-autohotkey-plus-slimcode/_git/vscode-autohotkey-plus-slimcode"
 	},
 	"galleryBanner": {
 		"color": "#5c2d91",
