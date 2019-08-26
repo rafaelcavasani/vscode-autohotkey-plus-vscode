@@ -73,13 +73,11 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
                 formatedLine = formatedLine.replace(result[0], res);
             }
 
-            pattern = /(.+::?)/gi;
-            if (formatedLine.match(/\{$/)) {
+            if (formatedLine.match(/(.+::?)/)) {
                 deep += 4;
                 labelFunction = true;
             }
-            pattern = /^(return)/gi;
-            if (formatedLine.match(/\{$/) && labelFunction === true) {
+            if (formatedLine.match(/^(return)/) && labelFunction === true) {
                 deep -= 4;
                 labelFunction = false;
             }
