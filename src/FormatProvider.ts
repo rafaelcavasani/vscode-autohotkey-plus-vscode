@@ -16,6 +16,7 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
 
         let formatDocument = "";
         let formatedLine = "";
+        let labelFunction = false;
         let deep = 0;
         const oneCommandList = ["IfNotExist", "IfExist", "IfWinActive", "IfWinNotActive", "IfWinExist", "IfWinNotExist", "IfInString", "IfNotInString", "if", "Else", "Loop", "For", "While"];
 
@@ -70,6 +71,17 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
                 res = res.replace(/\s*\,\s*/, ", ");
                 res = res.replace(/\s*\{/, " {");
                 formatedLine = formatedLine.replace(result[0], res);
+            }
+
+            pattern = /(.+::?)/gi;
+            if (formatedLine.match(/\{$/)) {
+                deep += 4;
+                labelFunction = true;
+            }
+            pattern = /^(return)/gi;
+            if (formatedLine.match(/\{$/) && labelFunction === true) {
+                deep -= 4;
+                labelFunction = false;
             }
 
             let noFunctionPattern = /\b((if|while|else if)\s?(\(.*?\))?\s*?\{)/gi;
