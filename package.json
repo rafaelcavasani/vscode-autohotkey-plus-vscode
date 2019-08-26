@@ -1,9 +1,9 @@
 {
-	"name": "vscode-autohotkey-plus",
-	"displayName": "AutoHotkeyPlus",
+	"name": "vscode-autohotkey-plus-slimcode",
+	"displayName": "AutoHotkeyPlusSlimCode",
 	"description": "AutoHotkey language support for VS Code",
-	"version": "2.0.1",
-	"publisher": "cweijan",
+	"version": "2.1.1",
+	"publisher": "rafaelcavasani",
 	"engines": {
 		"vscode": "^1.30.0"
 	},
@@ -13,7 +13,8 @@
 	"main": "./out/extension",
 	"categories": [
 		"Programming Languages",
-		"Snippets"
+		"Snippets",
+		"Formatters"
 	],
 	"license": "SEE LICENSE IN LICENSE.md",
 	"icon": "icon.png",
