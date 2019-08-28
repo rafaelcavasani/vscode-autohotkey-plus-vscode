@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-function getRemark(document: vscode.TextDocument, line: number){
+function getRemark(document: vscode.TextDocument, line: number) {
     if (line >= 0) {
         const {text} = document.lineAt(line);
         const markMatch = text.match(/^;(.+)/);
@@ -14,9 +14,11 @@ function getRemark(document: vscode.TextDocument, line: number){
 
 export function getSymbolForLine(document: vscode.TextDocument, line: number): vscode.SymbolInformation {
     const {text} = document.lineAt(line);
-    const methodMatch = text.match(/(\w+\(\w*\)){/);
+
+    const methodMatch = text.match(/(\w+\(\w*\))\s*{/);
     if (methodMatch) {
-        return new vscode.SymbolInformation(methodMatch[1], vscode.SymbolKind.Method, getRemark(document, line - 1), new vscode.Location(document.uri, new vscode.Position(line, 0)));
+        const loc = new vscode.Location(document.uri, new vscode.Position(line, 0));
+        return new vscode.SymbolInformation(methodMatch[1], vscode.SymbolKind.Method, getRemark(document, line - 1), loc);
     }
 
     const hotKeyMatch = text.match(/;;(.+)/);
@@ -32,9 +34,7 @@ export class SymBolProvider implements vscode.DocumentSymbolProvider {
         const result: vscode.SymbolInformation[] = [];
         for (let line = 0; line < lineCount; line++) {
             const symbol = getSymbolForLine(document, line);
-            if (symbol) {
-                result.push(symbol);
-            }
+            if (symbol) { result.push(symbol); }
         }
         return result;
     }
