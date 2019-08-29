@@ -7,4 +7,6 @@ AutoHotKey language support for VS Code
 * Comment blocks
 * Snippets
 * Method symbol
-* Code format (SlimCode Framework best pratices)
+* Goto Definition
+* Signature Helper (tooltip for method parameters)
+* Code format (SlimCode best pratices)

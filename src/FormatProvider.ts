@@ -53,7 +53,8 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
             }
 
             // tslint:disable-next-line: max-line-length
-            pattern = /(for\s+\w+\s*,\s*\w+\s+in\s+([a-zA-Z0-9\[\]\(\)_\-\.])+\s*\{?)/gi;
+            // tslint:disable-next-line: max-line-length
+            pattern = /(for\s+\w+\s*,\s*\w+\s+in\s+(\%\s*)?([a-zA-Z0-9\[\]\(\)_\-\.])+\s*\{?)/gi;
             result = [];
             // tslint:disable-next-line: no-conditional-assignment
             while (result = pattern.exec(formatedLine)) {
@@ -65,40 +66,46 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
             }
 
             // tslint:disable-next-line: max-line-length
+            // tslint:disable-next-line: max-line-length
             pattern = /(loop\s*\,\s*\%?\s*([a-zA-z0-9().])+\s*\{?)/gi;
             result = [];
             // tslint:disable-next-line: no-conditional-assignment
             while (result = pattern.exec(formatedLine)) {
-                let res = result[0].replace(/loop\s*/gi, "loop ");
-                res = res.replace(/\s*\,\s*/, ", ");
+                let res = result[0].replace(/loop\s*\,\s*/gi, "loop, ");
                 res = res.replace(/\s*\{/, " {");
                 formatedLine = formatedLine.replace(result[0], res);
             }
 
-            let noFunctionPattern = /\b((if|while|else if)\s?(\(.*?\))?\s*?\{?)/gi;
+            let noFunctionPattern = /\b(\s*(else if|if|while)\s?(\(.*?\))?\s*\{?)/gi;
             result = [];
             // tslint:disable-next-line: no-conditional-assignment
             while (result = noFunctionPattern.exec(formatedLine)) {
-                let res = result[0].replace(/\b((if)\s*\()/gi, "if (");
-                res = res.replace(/(\}\s*else\s+if\s*\()/gi, "} else if (");
+                let res = result[0].replace(/if\s*\(/gi, "if (");
+                // tslint:disable-next-line: no-console
+                console.log(res);
+                if (res.match(/else\s+if\s*\(/gi) !== null) {
+                    // tslint:disable-next-line: no-console
+                    console.log("match");
+                }
+                res = res.replace(/\b(\s*else\s+if\s*\()/gi, " else if (");
                 res = res.replace(/(\)\s*\{)/, ") {");
                 res = res.replace(/\b((while)\s*\()/gi, "while (");
                 formatedLine = formatedLine.replace(result[0], res);
             }
 
-            noFunctionPattern = /(\}\s*(else)\s*\{)/gi;
+            noFunctionPattern = /(\}\s*else\s*\{)/gi;
             result = [];
             // tslint:disable-next-line: no-conditional-assignment
             while (result = noFunctionPattern.exec(formatedLine)) {
-                const res = result[0].replace(/(\}\s*(else)\s*\{)/gi, "} else {");
+                const res = result[0].replace(/(\}\s*else\s*\{)/gi, "} else {");
                 formatedLine = formatedLine.replace(result[0], res);
             }
 
-            noFunctionPattern = /((?!\})\s*(else)\s*)/gi;
+            noFunctionPattern = /((?!\})\s*else\s*)$/gi;
             result = [];
             // tslint:disable-next-line: no-conditional-assignment
             while (result = noFunctionPattern.exec(formatedLine)) {
-                const res = result[0].replace(/(\s*(else)\s*)/gi, " else");
+                const res = result[0].replace(/(\s*else\s*)/gi, " else");
                 formatedLine = formatedLine.replace(result[0], res);
             }
 
@@ -122,7 +129,7 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
                 formatDocument += formatedLine;
             }
 
-            pattern = /(if\s*\(.*\)(?!\{))$|(for\s+\w+\s*,\s*\w+\s+in\s+([a-zA-Z0-9\[\]\(\)_\-\.])+\s*(?!\{))$|(loop\s*\,\s*\%?\s*([a-zA-z0-9().])+)$|(else\s*(?!\{))$/gi;
+            pattern = /(if\s*\(.*\)(?!\{))$|(for\s+\w+\s*,\s*\w+\s+in\s+(\%\s*)?([a-zA-Z0-9\[\]\(\)_\-\.])+\s*(?!\{))$|(loop\s*\,\s*\%?\s*([a-zA-z0-9().])+)$|(else\s*(?!\{))$/gi;
             let nextLine = "";
             if (line !== document.lineCount - 1) {
                 nextLine = document.lineAt(line + 1).text.toString();
