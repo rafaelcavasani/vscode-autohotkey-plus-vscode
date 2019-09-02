@@ -58,7 +58,6 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
             }
 
             // tslint:disable-next-line: max-line-length
-            // tslint:disable-next-line: max-line-length
             pattern = /(for\s+\w+\s*,\s*\w+\s+in\s+(\%\s*)?([a-zA-Z0-9\[\]\(\)_\-\.])+\s*\{?)/gi;
             result = [];
             // tslint:disable-next-line: no-conditional-assignment
@@ -71,7 +70,6 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
             }
 
             // tslint:disable-next-line: max-line-length
-            // tslint:disable-next-line: max-line-length
             pattern = /(loop\s*(\,\s*(\%\s*)?([a-zA-z0-9().])*)?(\%\s*)?\s*\{?)/gi;
             result = [];
             // tslint:disable-next-line: no-conditional-assignment
@@ -82,11 +80,11 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
                 formatedLine = formatedLine.replace(result[0], res);
             }
 
-            let noFunctionPattern = /(\}?\s*(else if|if|while)\s?(\(\w*?\))?\s*\{?)/gi;
+            let noFunctionPattern = /(\}?\s*(else if|if|while)\s*(\w*\s*)?(\(.*\))\s*\{?)/gi;
             result = [];
             // tslint:disable-next-line: no-conditional-assignment
             while (result = noFunctionPattern.exec(formatedLine)) {
-                let res = result[0].replace(/if\s*\(/gi, "if (");
+                let res = result[0].replace(/^(if\s)+/gi, "if ");
                 res = res.replace(/(\}\s*else\s+if\s*\()/gi, "} else if (");
                 res = res.replace(/\b(while\s*\()/gi, "while (");
                 res = res.replace(/\b((while\s*)(?!\s+\())/gi, "while ");
@@ -108,6 +106,14 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
             // tslint:disable-next-line: no-conditional-assignment
             while (result = noFunctionPattern.exec(formatedLine)) {
                 const res = result[0].replace(/(\s*else\s*)/gi, " else");
+                formatedLine = formatedLine.replace(result[0], res);
+            }
+
+            noFunctionPattern = /(try\s*\{)/gi;
+            result = [];
+            // tslint:disable-next-line: no-conditional-assignment
+            while (result = noFunctionPattern.exec(formatedLine)) {
+                const res = result[0].replace(/(try\s*\{)/gi, "try {");
                 formatedLine = formatedLine.replace(result[0], res);
             }
 
@@ -138,7 +144,7 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
                 nextLine = nextLine.replace(/\s+$/g, "");
             }
             // tslint:disable-next-line: max-line-length
-            pattern = /(if\s*(\(.*\))\s*(?!\{))$|(for\s+\w+\s*,\s*\w+\s+in\s+(\%\s*)?([a-zA-Z0-9\[\]\(\)_\-\.])+\s*(?!\{))$|(loop\s*(\,\s*(\%\s*)?([a-zA-z0-9().])*)?(\%\s*)?\s*(?!\{))$|(else\s*(if\s*\(\w*\)\s*)?(?!\{))$|(\}?\s*catch\s*(,\s*\w*)?\s*(?!\{))$|(try\s*(?!\{))$|(while\s*?(\(.*\))?\s*(?!\{))$/gi;
+            pattern = /(\}?\s*(else if|if|while)\s*(\w*\s*)?(\(.*\))\s*(?!\{))$|(for\s+\w+\s*,\s*\w+\s+in\s+(\%\s*)?([a-zA-Z0-9\[\]\(\)_\-\.])+\s*(?!\{))$|(loop\s*(\,\s*(\%\s*)?([a-zA-z0-9().])*)?(\%\s*)?\s*(?!\{))$|(else\s*(if\s*\(\w*\)\s*)?(?!\{))$|(\}?\s*catch\s*(,\s*\w*)?\s*(?!\{))$|(try\s*(?!\{))$/gi;
             if ((formatedLine.match(pattern) !== null) || (formatedLine.match(/^\}/) !== null && nextLine.match(/^else/) !== null)) {
                 lineBreak = false;
             }
