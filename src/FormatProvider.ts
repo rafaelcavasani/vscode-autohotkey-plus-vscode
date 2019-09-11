@@ -12,6 +12,11 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
         throw new Error("Method not implemented.");
     }
 
+    /* todo list
+     *
+     * objetos nas variáveis
+     *
+     */
     public provideDocumentFormattingEdits(document: vscode.TextDocument, options: vscode.FormattingOptions, token: vscode.CancellationToken): vscode.ProviderResult<vscode.TextEdit[]> {
 
         let formatDocument = "";
@@ -49,7 +54,7 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
             }
 
             // tslint:disable-next-line: max-line-length
-            pattern = /^((?!(if|else|else if|return|Loop|for|while|try|finallyIfNotExist|IfExist|IfWinActive|IfWinNotActive|IfWinExist|IfWinNotExist|IfInString|IfNotInString))\w+?\s*\(\w*?\)\s*?\{)/gi;
+            pattern = /^((?!(if|else|else if|return|Loop|for|while|try|finallyIfNotExist|IfExist|IfWinActive|IfWinNotActive|IfWinExist|IfWinNotExist|IfInString|IfNotInString))\w+?\s*\(.*?\)\s*?\{)/gi;
             result = [];
             // tslint:disable-next-line: no-conditional-assignment
             while (result = pattern.exec(formatedLine)) {
@@ -80,7 +85,7 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
                 formatedLine = formatedLine.replace(result[0], res);
             }
 
-            let noFunctionPattern = /(\}?\s*(else if|if|while)\s*(\w*\s*)?(\(.*\))\s*\{?)/gi;
+            let noFunctionPattern = /(\}?\s*(else if|if|while)\s*(\w*\s*)?(\(?.*\)?)\s*\{?)/gi;
             result = [];
             // tslint:disable-next-line: no-conditional-assignment
             while (result = noFunctionPattern.exec(formatedLine)) {
@@ -90,6 +95,7 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
                 res = res.replace(/\b((while\s*)(?!\s+\())/gi, "while ");
                 res = res.replace(/(\)\s*\{)/, ") {");
                 res = res.replace(/(\s*\{)$/, " {");
+                res = res.replace(/\s{2,}/gi, " ");
                 formatedLine = formatedLine.replace(result[0], res);
             }
 
