@@ -14,6 +14,7 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
 
     /* todo list
      *
+     * verificar se { ou } estão dentro de comentários e não identar
      * objetos nas variáveis
      *
      */
