@@ -16,6 +16,9 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
      *
      * verificar se { ou } estão dentro de comentários e não identar
      * objetos nas variáveis
+     * funções com parâmetros
+     * if e else sem chaves
+     * while sem parametros - substituir muitos espaços
      *
      */
     public provideDocumentFormattingEdits(document: vscode.TextDocument, options: vscode.FormattingOptions, token: vscode.CancellationToken): vscode.ProviderResult<vscode.TextEdit[]> {
@@ -45,7 +48,7 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
                 labelFunction = false;
             }
 
-            let pattern = /((class)\s*\w*\s*?\{)/gi;
+            let pattern = /((class)\s*\w*\s*(extends\s*\w*\s*)?\{)/gi;
             // tslint:disable-next-line: no-shadowed-variable
             let result = [];
             // tslint:disable-next-line: no-conditional-assignment
@@ -83,6 +86,15 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
                 let res = result[0].replace(/loop\s*\,\s*/gi, "loop, ");
                 res = res.replace(/\b(\,\s*\%\s*)/, ", % ");
                 res = res.replace(/\s*\{/, " {");
+                formatedLine = formatedLine.replace(result[0], res);
+            }
+
+            // tslint:disable-next-line: max-line-length
+            pattern = /\s*\,\s*/;
+            result = [];
+            // tslint:disable-next-line: no-conditional-assignment
+            while (result = pattern.exec(formatedLine)) {
+                const res = result[0].replace(/\s*\,\s*/, ", ");
                 formatedLine = formatedLine.replace(result[0], res);
             }
 
