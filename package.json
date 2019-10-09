@@ -2,7 +2,7 @@
 	"name": "vscode-autohotkey-plus-slimcode",
 	"displayName": "AutoHotKey SlimCode",
 	"description": "AutoHotkey language support for VS Code",
-	"version": "2.1.15",
+	"version": "2.1.16",
 	"publisher": "rafaelcavasani",
 	"engines": {
 		"vscode": "^1.30.0"
