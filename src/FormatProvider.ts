@@ -32,16 +32,13 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
             formatedLine = formatedLine.replace(/\s+$/g, "");
             formatedLine = formatedLine.replace(/\s*\,\s*/g, ", ");
 
-            if (commentType === 2) {
-                if (formatedLine.match(/\*\/$/)) {
-                    commentType = 0;
+            if (commentType !== 2) {
+                if (formatedLine.match(/^\;/)) {
+                    commentType = 1;
                 }
-            }
-            if (formatedLine.match(/^\;/)) {
-                commentType = 1;
-            }
-            if (formatedLine.match(/^\/\*/)) {
-                commentType = 2;
+                if (formatedLine.match(/^\/\*/)) {
+                    commentType = 2;
+                }
             }
 
             if (commentType === 0) {
@@ -119,7 +116,11 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
                     formatedLine = formatedLine.replace(result[0], res);
                 }
 
-                if (!deepIfElse) {
+                let previousLine = "";
+                if (line !== 0) {
+                    previousLine = document.lineAt(line - 1).text.toString();
+                }
+                if (!deepIfElse && previousLine.match(/\}$/)) {
                     noFunctionPattern = /((?!\})\s*else\s*)$/gi;
                     result = [];
                     // tslint:disable-next-line: no-conditional-assignment
@@ -229,7 +230,12 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
             } else {
                 formatDocument += " ".repeat(deep) + formatedLine;
                 formatDocument += "\n";
-                commentType = 0;
+                if (commentType === 1) {
+                    commentType = 0;
+                }
+                if (formatedLine.match(/\*\/$/)) {
+                    commentType = 0;
+                }
             }
         }
         const result = [];
