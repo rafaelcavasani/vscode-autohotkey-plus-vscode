@@ -63,7 +63,7 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
                 }
 
                 // tslint:disable-next-line: max-line-length
-                pattern = /^((?!(if|else|else if|return|Loop|for|while|try|finallyIfNotExist|IfExist|IfWinActive|IfWinNotActive|IfWinExist|IfWinNotExist|IfInString|IfNotInString))\w+?\s*\(.*?\)\s*?\{)/gi;
+                pattern = /^((?!(if|else|else if|return|Loop|for|while|try|finallyIfNotExist|IfExist|IfWinActive|IfWinNotActive|IfWinExist|IfWinNotExist|IfInString|IfNotInString|Gui\s*,|LV_))\w+?\s*\(.*?\)\s*?\{)/gi;
                 result = [];
                 // tslint:disable-next-line: no-conditional-assignment
                 while (result = pattern.exec(formatedLine)) {
@@ -149,21 +149,23 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
                 }
 
                 // object in variable
-                noFunctionPattern = /(\w*\s*:=\s*{)/gi;
-                const matchObject = /\{/.exec(formatedLine);
-                if (matchObject) {
-                    deepObject = matchObject.index;
-                }
+                noFunctionPattern = /^(\w*\s*:=\s*[\{\[])/gi;
                 if (formatedLine.match(noFunctionPattern) || isObject === true) {
-                    isObject = true;
-                    lineBreak = false;
-                    formatedLine = formatedLine.replace(/\s*\,\s*/g, ",");
-                    formatedLine = formatedLine.replace(/,/g, `\n${" ".repeat(deepObject)},`);
-                    const isObjectPattern = /\}$/;
-                    if (formatedLine.match(isObjectPattern)) {
-                        isObject = false;
-                        lineBreak = true;
-                        deepObject = 0;
+                    if (!isObject) {
+                        const matchObject = /[\{\[]/.exec(formatedLine);
+                        if (matchObject) {
+                            deepObject = matchObject.index;
+                        }
+                        isObject = true;
+                    } else {
+                        const isObjectPattern = /^\,/;
+                        if (formatedLine.match(isObjectPattern)) {
+                            formatedLine = formatedLine.replace(/^\s*\,\s*/, ",");
+                            formatedLine = formatedLine.replace(/,/, `${" ".repeat(deepObject)},`);
+                        } else {
+                            isObject = false;
+                            deepObject = 0;
+                        }
                     }
                 }
 
@@ -190,7 +192,7 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
                     lineBreak = true;
                     deepIfElse = false;
                 } else {
-                    if (formatedLine.match(/(\s*(else|else if|if)\s*(\w*\s*)?(\(?[\w!=\s<>]*\)?)\s*(?!\{))$/) && !nextLine.match(/^{/)) {
+                    if (formatedLine.match(/(\s*(else|else if|if)\s*(\w*\s*)?(\(?[\w!=\s<>\.]*\)?)\s*(?!\{))$/) && !nextLine.match(/^{/)) {
                         deep += 4;
                         deepIfElse = true;
                         lineBreak = true;
@@ -206,7 +208,7 @@ export class FormatProvider implements vscode.DocumentRangeFormattingEditProvide
                         }
                     }
                 }
-                if (formatedLine.match(/(.+::?)$/)) {
+                if (formatedLine.match(/^((?!Gui\s*,|Menu\s*,|FileRead\s*,|GuiControl\s*,|FileSelectFile\s*,).+::?)$/)) {
                     deep += 4;
                     labelFunction = true;
                 }

@@ -20,7 +20,7 @@
 	"icon": "icon.png",
 	"repository": {
 		"type": "git",
-		"url": "https://rafaelcavasani.visualstudio.com/vscode-autohotkey-plus-slimcode/_git/vscode-autohotkey-plus-slimcode"
+		"url": "https://github.com/rafaelcavasani/vscode-ahk-formatter.git"
 	},
 	"galleryBanner": {
 		"color": "#5c2d91",
