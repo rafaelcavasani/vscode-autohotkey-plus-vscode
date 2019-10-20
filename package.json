@@ -20,7 +20,7 @@
 	"icon": "icon.png",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/rafaelcavasani/vscode-ahk-formatter.git"
+		"url": "https://github.com/rafaelcavasani/vscode-autohotkey-plus-vscode.git"
 	},
 	"galleryBanner": {
 		"color": "#5c2d91",
